@@ -33,7 +33,7 @@ const (
 	maxMsgSize     = 512 * 1024 * 1024
 )
 
-func NewClient(ctx context.Context, c *ndd.Config) (*resource.ResourceClient, error) {
+func NewClient(ctx context.Context, c *ndd.Config) (resource.ResourceClient, error) {
 	var opts []grpc.DialOption
 	fmt.Printf("grpc client config: %v\n", *c)
 	//if c.Insecure {
@@ -55,7 +55,7 @@ func NewClient(ctx context.Context, c *ndd.Config) (*resource.ResourceClient, er
 	//defer conn.Close()
 	client := resource.NewResourceClient(conn)
 
-	return &client, nil
+	return client, nil
 }
 
 // newTLS sets up a new TLS profile
