@@ -18,14 +18,12 @@ package client
 
 import (
 	"context"
-	"crypto/tls"
 	"fmt"
 	"time"
 
 	"github.com/yndd/nddo-grpc/ndd"
 	resource "github.com/yndd/nddo-grpc/resource/resourcepb"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
 )
 
 const (
@@ -39,12 +37,14 @@ func NewClient(ctx context.Context, c *ndd.Config) (resource.ResourceClient, err
 	//if c.Insecure {
 	//	opts = append(opts, grpc.WithInsecure())
 	//} else {
-	tlsConfig, err := newTLS(*c)
-	if err != nil {
-		return nil, err
-	}
-	opts = append(opts, grpc.WithTransportCredentials(credentials.NewTLS(tlsConfig)))
-	//}
+	/*
+		tlsConfig, err := newTLS(c)
+		if err != nil {
+			return nil, err
+		}
+		opts = append(opts, grpc.WithTransportCredentials(credentials.NewTLS(tlsConfig)))
+		//}
+	*/
 	timeoutCtx, cancel := context.WithTimeout(ctx, defaultTimeout)
 	defer cancel()
 
@@ -59,7 +59,8 @@ func NewClient(ctx context.Context, c *ndd.Config) (resource.ResourceClient, err
 }
 
 // newTLS sets up a new TLS profile
-func newTLS(c ndd.Config) (*tls.Config, error) {
+/*
+func newTLS(c *ndd.Config) (*tls.Config, error) {
 	tlsConfig := &tls.Config{
 		Renegotiation:      tls.RenegotiateNever,
 		InsecureSkipVerify: c.SkipVerify,
@@ -72,7 +73,6 @@ func newTLS(c ndd.Config) (*tls.Config, error) {
 }
 
 func loadCerts(tlscfg *tls.Config) error {
-	/*
 		if *c.TLSCert != "" && *c.TLSKey != "" {
 			certificate, err := tls.LoadX509KeyPair(*c.TLSCert, *c.TLSKey)
 			if err != nil {
@@ -92,6 +92,6 @@ func loadCerts(tlscfg *tls.Config) error {
 			}
 			tlscfg.RootCAs = certPool
 		}
-	*/
 	return nil
 }
+*/
