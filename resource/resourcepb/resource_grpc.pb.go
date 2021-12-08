@@ -18,7 +18,9 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ResourceClient interface {
+	Get(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Reply, error)
 	Alloc(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Reply, error)
+	DeAlloc(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Reply, error)
 }
 
 type resourceClient struct {
@@ -27,6 +29,15 @@ type resourceClient struct {
 
 func NewResourceClient(cc grpc.ClientConnInterface) ResourceClient {
 	return &resourceClient{cc}
+}
+
+func (c *resourceClient) Get(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Reply, error) {
+	out := new(Reply)
+	err := c.cc.Invoke(ctx, "/resource.Resource/Get", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *resourceClient) Alloc(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Reply, error) {
@@ -38,11 +49,22 @@ func (c *resourceClient) Alloc(ctx context.Context, in *Request, opts ...grpc.Ca
 	return out, nil
 }
 
+func (c *resourceClient) DeAlloc(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Reply, error) {
+	out := new(Reply)
+	err := c.cc.Invoke(ctx, "/resource.Resource/DeAlloc", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ResourceServer is the server API for Resource service.
 // All implementations must embed UnimplementedResourceServer
 // for forward compatibility
 type ResourceServer interface {
+	Get(context.Context, *Request) (*Reply, error)
 	Alloc(context.Context, *Request) (*Reply, error)
+	DeAlloc(context.Context, *Request) (*Reply, error)
 	mustEmbedUnimplementedResourceServer()
 }
 
@@ -50,8 +72,14 @@ type ResourceServer interface {
 type UnimplementedResourceServer struct {
 }
 
+func (UnimplementedResourceServer) Get(context.Context, *Request) (*Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
+}
 func (UnimplementedResourceServer) Alloc(context.Context, *Request) (*Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Alloc not implemented")
+}
+func (UnimplementedResourceServer) DeAlloc(context.Context, *Request) (*Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeAlloc not implemented")
 }
 func (UnimplementedResourceServer) mustEmbedUnimplementedResourceServer() {}
 
@@ -64,6 +92,24 @@ type UnsafeResourceServer interface {
 
 func RegisterResourceServer(s grpc.ServiceRegistrar, srv ResourceServer) {
 	s.RegisterService(&Resource_ServiceDesc, srv)
+}
+
+func _Resource_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ResourceServer).Get(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/resource.Resource/Get",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ResourceServer).Get(ctx, req.(*Request))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Resource_Alloc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -84,6 +130,24 @@ func _Resource_Alloc_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Resource_DeAlloc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ResourceServer).DeAlloc(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/resource.Resource/DeAlloc",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ResourceServer).DeAlloc(ctx, req.(*Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Resource_ServiceDesc is the grpc.ServiceDesc for Resource service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -92,8 +156,16 @@ var Resource_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ResourceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "Get",
+			Handler:    _Resource_Get_Handler,
+		},
+		{
 			MethodName: "Alloc",
 			Handler:    _Resource_Alloc_Handler,
+		},
+		{
+			MethodName: "DeAlloc",
+			Handler:    _Resource_DeAlloc_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
