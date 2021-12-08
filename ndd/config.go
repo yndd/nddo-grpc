@@ -17,6 +17,7 @@ limitations under the License.
 package ndd
 
 type Config struct {
+	Address     string
 	Username   string
 	Password   string
 	Proxy      bool
@@ -26,7 +27,6 @@ type Config struct {
 	TLSKey     string
 	SkipVerify bool
 	Insecure   bool
-	Target     string
 	MaxMsgSize int
 }
 

@@ -1,5 +1,5 @@
 /*
-Copyright 2020 Wim Henderickx.
+Copyright 2020 NDDO.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -33,13 +33,13 @@ const (
 	maxMsgSize     = 512 * 1024 * 1024
 )
 
-func NewClient(ctx context.Context, c ndd.Config) (resource.ResourceClient, error) {
+func NewClient(ctx context.Context, c *ndd.Config) (*resource.ResourceClient, error) {
 	var opts []grpc.DialOption
-	fmt.Printf("grpc client config: %v\n", c)
+	fmt.Printf("grpc client config: %v\n", *c)
 	//if c.Insecure {
 	//	opts = append(opts, grpc.WithInsecure())
 	//} else {
-	tlsConfig, err := newTLS(c)
+	tlsConfig, err := newTLS(*c)
 	if err != nil {
 		return nil, err
 	}
@@ -48,14 +48,14 @@ func NewClient(ctx context.Context, c ndd.Config) (resource.ResourceClient, erro
 	timeoutCtx, cancel := context.WithTimeout(ctx, defaultTimeout)
 	defer cancel()
 
-	conn, err := grpc.DialContext(timeoutCtx, c.Target, opts...)
+	conn, err := grpc.DialContext(timeoutCtx, c.Address, opts...)
 	if err != nil {
 		return nil, err
 	}
 	//defer conn.Close()
 	client := resource.NewResourceClient(conn)
 
-	return client, nil
+	return &client, nil
 }
 
 // newTLS sets up a new TLS profile

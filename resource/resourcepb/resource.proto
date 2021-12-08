@@ -28,16 +28,18 @@ message Request {
   string tenant = 1;
   string networkInstance = 2;
   string kind = 3; // ipam, route-target, vlan
-  map<string, TypedValue> data  = 4;       // Map of tags (attribute) name to value.
-  map<string, string> queryTags  = 5;      // Map of tags (attribute) name to value.
-  map<string, string> additionalTags = 6;  // Map of tags (attribute) name to value.
+  string addressFamily = 4; // ipv4, ipv6
+  map<string, string> selector  = 5;  // Map of tags (attribute) name to value.
+  map<string, string> sourceTag = 6;  // Map of tags (attribute) name to value.
+  map<string, TypedValue> data  = 7;  // Map of tags (attribute) name to value.
   
 }
 
 message Reply {
+
   int64 timestamp = 1;  // Timestamp in nanoseconds since Epoch.
   int64 expiryTime = 2; // ExpiryTime in nanoseconds since Epoch.
-  map<string, TypedValue> queryTags  = 5;       // Map of tags (attribute) name to value.
+  map<string, TypedValue> data  = 3;       // Map of tags (attribute) name to value.
 
 }
 
