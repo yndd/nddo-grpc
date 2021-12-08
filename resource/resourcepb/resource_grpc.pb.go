@@ -18,9 +18,9 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ResourceClient interface {
-	Get(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Reply, error)
-	Alloc(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Reply, error)
-	DeAlloc(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Reply, error)
+	ResourceGet(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Reply, error)
+	ResourceAlloc(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Reply, error)
+	ResourceDeAlloc(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Reply, error)
 }
 
 type resourceClient struct {
@@ -31,27 +31,27 @@ func NewResourceClient(cc grpc.ClientConnInterface) ResourceClient {
 	return &resourceClient{cc}
 }
 
-func (c *resourceClient) Get(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Reply, error) {
+func (c *resourceClient) ResourceGet(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Reply, error) {
 	out := new(Reply)
-	err := c.cc.Invoke(ctx, "/resource.Resource/Get", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/resource.Resource/ResourceGet", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *resourceClient) Alloc(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Reply, error) {
+func (c *resourceClient) ResourceAlloc(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Reply, error) {
 	out := new(Reply)
-	err := c.cc.Invoke(ctx, "/resource.Resource/Alloc", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/resource.Resource/ResourceAlloc", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *resourceClient) DeAlloc(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Reply, error) {
+func (c *resourceClient) ResourceDeAlloc(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Reply, error) {
 	out := new(Reply)
-	err := c.cc.Invoke(ctx, "/resource.Resource/DeAlloc", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/resource.Resource/ResourceDeAlloc", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -62,9 +62,9 @@ func (c *resourceClient) DeAlloc(ctx context.Context, in *Request, opts ...grpc.
 // All implementations must embed UnimplementedResourceServer
 // for forward compatibility
 type ResourceServer interface {
-	Get(context.Context, *Request) (*Reply, error)
-	Alloc(context.Context, *Request) (*Reply, error)
-	DeAlloc(context.Context, *Request) (*Reply, error)
+	ResourceGet(context.Context, *Request) (*Reply, error)
+	ResourceAlloc(context.Context, *Request) (*Reply, error)
+	ResourceDeAlloc(context.Context, *Request) (*Reply, error)
 	mustEmbedUnimplementedResourceServer()
 }
 
@@ -72,14 +72,14 @@ type ResourceServer interface {
 type UnimplementedResourceServer struct {
 }
 
-func (UnimplementedResourceServer) Get(context.Context, *Request) (*Reply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
+func (UnimplementedResourceServer) ResourceGet(context.Context, *Request) (*Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ResourceGet not implemented")
 }
-func (UnimplementedResourceServer) Alloc(context.Context, *Request) (*Reply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Alloc not implemented")
+func (UnimplementedResourceServer) ResourceAlloc(context.Context, *Request) (*Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ResourceAlloc not implemented")
 }
-func (UnimplementedResourceServer) DeAlloc(context.Context, *Request) (*Reply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeAlloc not implemented")
+func (UnimplementedResourceServer) ResourceDeAlloc(context.Context, *Request) (*Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ResourceDeAlloc not implemented")
 }
 func (UnimplementedResourceServer) mustEmbedUnimplementedResourceServer() {}
 
@@ -94,56 +94,56 @@ func RegisterResourceServer(s grpc.ServiceRegistrar, srv ResourceServer) {
 	s.RegisterService(&Resource_ServiceDesc, srv)
 }
 
-func _Resource_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Resource_ResourceGet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Request)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ResourceServer).Get(ctx, in)
+		return srv.(ResourceServer).ResourceGet(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/resource.Resource/Get",
+		FullMethod: "/resource.Resource/ResourceGet",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ResourceServer).Get(ctx, req.(*Request))
+		return srv.(ResourceServer).ResourceGet(ctx, req.(*Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Resource_Alloc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Resource_ResourceAlloc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Request)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ResourceServer).Alloc(ctx, in)
+		return srv.(ResourceServer).ResourceAlloc(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/resource.Resource/Alloc",
+		FullMethod: "/resource.Resource/ResourceAlloc",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ResourceServer).Alloc(ctx, req.(*Request))
+		return srv.(ResourceServer).ResourceAlloc(ctx, req.(*Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Resource_DeAlloc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Resource_ResourceDeAlloc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Request)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ResourceServer).DeAlloc(ctx, in)
+		return srv.(ResourceServer).ResourceDeAlloc(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/resource.Resource/DeAlloc",
+		FullMethod: "/resource.Resource/ResourceDeAlloc",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ResourceServer).DeAlloc(ctx, req.(*Request))
+		return srv.(ResourceServer).ResourceDeAlloc(ctx, req.(*Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -156,16 +156,16 @@ var Resource_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ResourceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Get",
-			Handler:    _Resource_Get_Handler,
+			MethodName: "ResourceGet",
+			Handler:    _Resource_ResourceGet_Handler,
 		},
 		{
-			MethodName: "Alloc",
-			Handler:    _Resource_Alloc_Handler,
+			MethodName: "ResourceAlloc",
+			Handler:    _Resource_ResourceAlloc_Handler,
 		},
 		{
-			MethodName: "DeAlloc",
-			Handler:    _Resource_DeAlloc_Handler,
+			MethodName: "ResourceDeAlloc",
+			Handler:    _Resource_ResourceDeAlloc_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
