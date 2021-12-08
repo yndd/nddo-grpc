@@ -21,11 +21,9 @@ package resource;
 option go_package = "github.com/netw-device-driver/ndd-grpc/resource/resourcepb";
 
 service Resource {
-    rpc Get (Request) returns (Reply) {}
-
-    rpc Alloc (Request) returns (Reply) {}
-
-    rpc DeAlloc (Request) returns (Reply) {}
+    rpc ResourceGet (Request) returns (Reply) {}
+    rpc ResourceAlloc (Request) returns (Reply) {}
+    rpc ResourceDeAlloc (Request) returns (Reply) {}
   }
   
 message Request {
