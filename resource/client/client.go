@@ -18,12 +18,14 @@ package client
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
 	"time"
 
 	"github.com/yndd/nddo-grpc/ndd"
 	resource "github.com/yndd/nddo-grpc/resource/resourcepb"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 )
 
 const (
@@ -34,17 +36,15 @@ const (
 func NewClient(ctx context.Context, c *ndd.Config) (resource.ResourceClient, error) {
 	var opts []grpc.DialOption
 	fmt.Printf("grpc client config: %v\n", *c)
-	//if c.Insecure {
-	//	opts = append(opts, grpc.WithInsecure())
-	//} else {
-	/*
+	if c.Insecure {
+		opts = append(opts, grpc.WithInsecure())
+	} else {
 		tlsConfig, err := newTLS(c)
 		if err != nil {
 			return nil, err
 		}
 		opts = append(opts, grpc.WithTransportCredentials(credentials.NewTLS(tlsConfig)))
-		//}
-	*/
+	}
 	timeoutCtx, cancel := context.WithTimeout(ctx, defaultTimeout)
 	defer cancel()
 
@@ -59,39 +59,39 @@ func NewClient(ctx context.Context, c *ndd.Config) (resource.ResourceClient, err
 }
 
 // newTLS sets up a new TLS profile
-/*
 func newTLS(c *ndd.Config) (*tls.Config, error) {
 	tlsConfig := &tls.Config{
 		Renegotiation:      tls.RenegotiateNever,
 		InsecureSkipVerify: c.SkipVerify,
 	}
-	err := loadCerts(tlsConfig)
-	if err != nil {
-		return nil, err
-	}
+	//err := loadCerts(tlsConfig)
+	//if err != nil {
+	//	return nil, err
+	//}
 	return tlsConfig, nil
 }
 
+/*
 func loadCerts(tlscfg *tls.Config) error {
-		if *c.TLSCert != "" && *c.TLSKey != "" {
-			certificate, err := tls.LoadX509KeyPair(*c.TLSCert, *c.TLSKey)
-			if err != nil {
-				return err
-			}
-			tlscfg.Certificates = []tls.Certificate{certificate}
-			tlscfg.BuildNameToCertificate()
+	if c.TLSCert != "" && c.TLSKey != "" {
+		certificate, err := tls.LoadX509KeyPair(*c.TLSCert, *c.TLSKey)
+		if err != nil {
+			return err
 		}
-		if c.TLSCA != nil && *c.TLSCA != "" {
-			certPool := x509.NewCertPool()
-			caFile, err := ioutil.ReadFile(*c.TLSCA)
-			if err != nil {
-				return err
-			}
-			if ok := certPool.AppendCertsFromPEM(caFile); !ok {
-				return errors.New("failed to append certificate")
-			}
-			tlscfg.RootCAs = certPool
+		tlscfg.Certificates = []tls.Certificate{certificate}
+		tlscfg.BuildNameToCertificate()
+	}
+	if c.TLSCA != nil && *c.TLSCA != "" {
+		certPool := x509.NewCertPool()
+		caFile, err := ioutil.ReadFile(*c.TLSCA)
+		if err != nil {
+			return err
 		}
+		if ok := certPool.AppendCertsFromPEM(caFile); !ok {
+			return errors.New("failed to append certificate")
+		}
+		tlscfg.RootCAs = certPool
+	}
 	return nil
 }
 */
