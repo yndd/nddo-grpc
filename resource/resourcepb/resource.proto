@@ -38,10 +38,10 @@ message Request {
 }
 
 message Reply {
-
-  int64 timestamp = 1;  // Timestamp in nanoseconds since Epoch.
-  int64 expiryTime = 2; // ExpiryTime in nanoseconds since Epoch.
-  map<string, TypedValue> data  = 3;       // Map of tags (attribute) name to value.
+  bool ready = 1;
+  int64 timestamp = 2;  // Timestamp in nanoseconds since Epoch.
+  int64 expiryTime = 3; // ExpiryTime in nanoseconds since Epoch.
+  map<string, TypedValue> data  = 4;       // Map of tags (attribute) name to value.
 
 }
 
