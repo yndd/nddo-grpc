@@ -27,14 +27,19 @@ service Resource {
   }
   
 message Request {
-  string tenant = 1;
-  string networkInstance = 2;
-  string kind = 3; // ipam, route-target, vlan
-  string addressFamily = 4; // ipv4, ipv6
-  map<string, string> selector  = 5;  // Map of tags (attribute) name to value.
-  map<string, string> sourceTag = 6;  // Map of tags (attribute) name to value.
-  map<string, TypedValue> data  = 7;  // Map of tags (attribute) name to value.
-  
+  string organizationName = 1;
+  string ipamName = 2;
+  string networkInstanceName = 3;
+  string kind = 4; // ipam, route-target, vlan
+  Alloc  alloc = 5;
+}
+
+message Alloc {
+  string addressFamily = 1; // ipv4, ipv6
+  string ipPrefix = 2;
+  map<string, string> selector  = 3;  // Map of tags (attribute) name to value.
+  map<string, string> sourceTag = 4;  // Map of tags (attribute) name to value.
+  map<string, TypedValue> data  = 5;  // Map of tags (attribute) name to value.
 }
 
 message Reply {
