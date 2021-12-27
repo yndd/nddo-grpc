@@ -27,11 +27,12 @@ service Resource {
   }
   
 message Request {
-  string organizationName = 1;
-  string ipamName = 2;
-  string networkInstanceName = 3;
-  string kind = 4; // ipam, route-target, vlan
-  Alloc  alloc = 5;
+  string namespace = 1;
+  string organizationName = 2;
+  string ipamName = 3;
+  string networkInstanceName = 4;
+  string kind = 5; // ipam, route-target, vlan
+  Alloc  alloc = 6;
 }
 
 message Alloc {
