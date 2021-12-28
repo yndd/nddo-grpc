@@ -28,11 +28,9 @@ service Resource {
   
 message Request {
   string namespace = 1;
-  string organizationName = 2;
-  string ipamName = 3;
-  string networkInstanceName = 4;
-  string kind = 5; // ipam, route-target, vlan
-  Alloc  alloc = 6;
+  string resourceName = 2;
+  string kind = 3; // ipam, route-target, vlan
+  Alloc  alloc = 4;
 }
 
 message Alloc {
