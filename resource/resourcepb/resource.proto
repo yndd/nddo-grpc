@@ -22,18 +22,19 @@ option go_package = "github.com/netw-device-driver/ndd-grpc/resource/resourcepb"
 
 service Resource {
     rpc ResourceGet (Request) returns (Reply) {}
-    rpc ResourceAlloc (Request) returns (Reply) {}
-    rpc ResourceDeAlloc (Request) returns (Reply) {}
+    rpc ResourceRequest (Request) returns (Reply) {}
+    rpc ResourceRelease (Request) returns (Reply) {}
   }
   
 message Request {
   string namespace = 1;
-  string resourceName = 2;
-  string kind = 3; // ipam, route-target, vlan
-  Alloc  alloc = 4;
+  string registryName = 2;
+  string resourceName = 3;
+  string kind = 4; // ipam, route-target, vlan
+  Req request = 5;
 }
 
-message Alloc {
+message Req {
   string addressFamily = 1; // ipv4, ipv6
   string ipPrefix = 2;
   map<string, string> selector  = 3;  // Map of tags (attribute) name to value.
