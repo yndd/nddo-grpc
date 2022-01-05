@@ -28,10 +28,11 @@ service Resource {
   
 message Request {
   string namespace = 1;
-  string registryName = 2;
-  string name = 3;
-  string kind = 4; // ipam, route-target, vlan
-  Req request = 5;
+  map<string, string> oda  = 2;  // flexible org/depl/az.
+  string registryName = 3;
+  string name = 4;
+  string kind = 5; // ipam, route-target, vlan
+  Req request = 6;
 }
 
 message Req {
