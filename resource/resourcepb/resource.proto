@@ -30,9 +30,10 @@ message Request {
   string namespace = 1;
   map<string, string> oda  = 2;  // flexible org/depl/az.
   string registryName = 3;
-  string name = 4;
-  string kind = 5; // ipam, route-target, vlan
-  Req request = 6;
+  string networkInstanceName = 4; // only used in ipam for now
+  string name = 5;
+  string kind = 6; // ipam, route-target, vlan
+  Req request = 7;
 }
 
 message Req {
