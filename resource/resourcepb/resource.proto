@@ -28,9 +28,10 @@ service Resource {
   
 message Request {
   string namespace = 1;
-  string resourceName = 2;
-  string kind = 3; // ipam, route-target, vlan
-  Req request = 4;
+  string registryName = 2;
+  string name = 3;
+  string kind = 4; // ipam, route-target, vlan
+  Req request = 5;
 }
 
 message Req {
